@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Psalms version (without API key)">
+    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Psalms version with full instructions">
+      <change afterPath="$PROJECT_DIR$/src/Schemas.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ChatGPTApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChatGPTApp.java" afterDir="false" />
     </list>
@@ -63,7 +64,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.ChatGPTApp.executor": "Run",
+    "Application.ChatGPTApp.executor": "Debug",
     "Application.GPTAssistantsApp.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
@@ -98,7 +99,8 @@
       <workItem from="1729815885346" duration="3156000" />
       <workItem from="1729819264841" duration="529000" />
       <workItem from="1729837473373" duration="327000" />
-      <workItem from="1729864873771" duration="870000" />
+      <workItem from="1729864873771" duration="909000" />
+      <workItem from="1729865827802" duration="6136000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -188,7 +190,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729865678633</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Psalms version with full instructions">
+      <option name="closed" value="true" />
+      <created>1729865771055</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1729865771055</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -210,7 +220,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="main/main" />
                       </list>
                     </value>
                   </entry>
@@ -230,6 +240,7 @@
     <MESSAGE value="Added multi-agent functionality" />
     <MESSAGE value="Psalms version" />
     <MESSAGE value="Psalms version (without API key)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Psalms version (without API key)" />
+    <MESSAGE value="Psalms version with full instructions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Psalms version with full instructions" />
   </component>
 </project>

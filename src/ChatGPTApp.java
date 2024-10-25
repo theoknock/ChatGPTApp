@@ -241,8 +241,9 @@ public class ChatGPTApp extends JFrame {
     }
 
     private void sendRequest(String userPrompt, String systemPrompt, JTextArea responseArea) {
+        System.out.println("sendRequest");
         // Get your OpenAI API key from an environment variable
-        String apiKey = "";
+        String apiKey = "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";
         if (apiKey == null || apiKey.isEmpty()) {
             SwingUtilities.invokeLater(() -> {
                 JOptionPane.showMessageDialog(this,
@@ -259,12 +260,35 @@ public class ChatGPTApp extends JFrame {
 
         // Build the request body
         String requestBody = "{\n" +
-                "  \"model\": \"gpt-4\",\n" +
+                "  \"model\": \"gpt-4o\",\n" +
                 "  \"messages\": [\n" +
                 "    {\"role\": \"system\", \"content\": \"" + escapeJson(systemPrompt) + "\"},\n" +
                 "    {\"role\": \"user\", \"content\": \"" + escapeJson(userPrompt) + "\"}\n" +
                 "  ],\n" +
-                "  \"stream\": true\n" +
+                "  \"stream\": true,\n" +
+                "  \"response_format\": {\n" +
+                "    \"type\": \"json_schema\",\n" +
+                "    \"json_schema\": {\n" +
+                "      \"name\": \"response_name\",\n" +
+                "      \"description\": \"Extracts the psalm number and response text from unstructured data\",\n" +
+                "      \"strict\": true,\n" +
+                "      \"schema\": {\n" +
+                "        \"type\": \"object\",\n" +
+                "        \"properties\": {\n" +
+                "          \"psalm_number\": {\n" +
+                "            \"type\": \"integer\",\n" +
+                "            \"description\": \"The number of the psalm being referenced\"\n" +
+                "          },\n" +
+                "          \"response\": {\n" +
+                "            \"type\": \"string\",\n" +
+                "            \"description\": \"The response text extracted from the psalm data\"\n" +
+                "          }\n" +
+                "        },\n" +
+                "        \"additionalProperties\": false,\n" +
+                "        \"required\": [\"psalm_number\", \"response\"]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
                 "}";
 
         try {
