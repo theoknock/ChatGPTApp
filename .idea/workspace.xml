@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Added ParaphraseGPT structured output schema">
+    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Added schemas for TheophanyGPT and IntratextualGPT">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ChatGPTApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChatGPTApp.java" afterDir="false" />
     </list>
@@ -101,7 +101,8 @@
       <workItem from="1729864873771" duration="909000" />
       <workItem from="1729865827802" duration="8627000" />
       <workItem from="1729886916882" duration="183000" />
-      <workItem from="1729888081701" duration="329000" />
+      <workItem from="1729888081701" duration="2787000" />
+      <workItem from="1729890932966" duration="191000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -223,7 +224,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729885134026</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Added max tokens to http request body">
+      <option name="closed" value="true" />
+      <created>1729888428408</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1729888428408</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -268,6 +277,8 @@
     <MESSAGE value="Psalms version with full instructions" />
     <MESSAGE value="An interim solution to structured outputs and schemas (embeds the schema in the http request object vs. refers to it via %s)" />
     <MESSAGE value="Added ParaphraseGPT structured output schema" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added ParaphraseGPT structured output schema" />
+    <MESSAGE value="Added max tokens to http request body" />
+    <MESSAGE value="Added schemas for TheophanyGPT and IntratextualGPT" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added schemas for TheophanyGPT and IntratextualGPT" />
   </component>
 </project>

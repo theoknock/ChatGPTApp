@@ -16,6 +16,10 @@ public class ChatGPTApp extends JFrame {
     private Map<String, String> assistants;
     private Map<String, JTextArea> responseAreas;
 
+    private String plainTextStyle = """
+            When responding to user queries, please use plain text format. Do not use markdown, HTML, or any other markup languages.
+            """;
+
     public ChatGPTApp() {
         setTitle("GPT Assistants App");
         setSize(1000, 700);
@@ -113,7 +117,7 @@ public class ChatGPTApp extends JFrame {
                        \s
                         After the introduction, include the following sections:
                        \s
-                        **Personal Application:** Consider how the passage applies to contemporary life, providing insights and guidance for daily living and spiritual growth. Offer practical ways the text can encourage, comfort, or instruct readers in their faith journey.
+                        Personal Application: Consider how the passage applies to contemporary life, providing insights and guidance for daily living and spiritual growth. Offer practical ways the text can encourage, comfort, or instruct readers in their faith journey.
                 
                         Also consider these for the Personal Application section:
                 
@@ -131,7 +135,7 @@ public class ChatGPTApp extends JFrame {
                         Make connections between the themes of the Psalm and contemporary societal issues or personal challenges. Discuss how the Psalm’s teachings can be applied in today's context, offering a biblical perspective on modern problems.
                 
                 
-                        **Engagement with Other Scriptures:** Cross-reference the text with other parts of the Bible, highlighting how it connects with or expands upon broader biblical themes. Use these connections to enhance understanding and draw out richer implications for today's readers.
+                        Engagement with Other Scriptures: Cross-reference the text with other parts of the Bible, highlighting how it connects with or expands upon broader biblical themes. Use these connections to enhance understanding and draw out richer implications for today's readers.
                 
                         Consider adding these to the Engagement with Other Scriptures section:
                 
@@ -146,7 +150,7 @@ public class ChatGPTApp extends JFrame {
                         Your goal is to make the scripture relevant and meaningful for modern Christians, focusing on personal growth, faith application, and spiritual enrichment without mentioning specific authors or focusing on historical context, except when necessary for theological clarity.
                 
                 
-                        ** Christ-Centered Conclusion**
+                        Christ-Centered Conclusion
                 
                         Christocentric Reflection: Discuss how the themes of the Psalm find their fulfillment in Christ. Consider how the Psalm foreshadows or points to aspects of Jesus’ life and mission.
                         Gospel Relevance: Relate the Psalm to the core tenets of the Gospel. Discuss how its messages align with or illuminate the work of Christ and the message of salvation, grace, and redemption.
@@ -235,7 +239,7 @@ public class ChatGPTApp extends JFrame {
                 for (String assistantName : assistants.keySet()) {
                     String systemPrompt = assistants.get(assistantName);
                     JTextArea responseArea = responseAreas.get(assistantName);
-                    new Thread(() -> sendRequest(assistantName, prompt, systemPrompt, responseArea)).start();
+                    new Thread(() -> sendRequest(assistantName, prompt, plainTextStyle + systemPrompt, responseArea)).start();
                 }
             }
         });
@@ -323,9 +327,177 @@ public class ChatGPTApp extends JFrame {
                 "  }\n" +
                 "}";
 
+        String theophanyGPTRequestBody = "{\n" +
+                "  \"model\": \"gpt-4o\",\n" +
+                "  \"messages\": [\n" +
+                "    {\"role\": \"system\", \"content\": \"" + escapeJson(systemPrompt) + "\"},\n" +
+                "    {\"role\": \"user\", \"content\": \"" + escapeJson(userPrompt) + "\"}\n" +
+                "  ],\n" +
+                "  \"max_tokens\": 16384,\n" +
+                "  \"stream\": true,\n" +
+                "  \"response_format\": {\n" +
+                "    \"type\": \"json_schema\",\n" +
+                "    \"json_schema\": {\n" +
+                "      \"name\": \"TheophanySchema\",\n" +
+                "      \"strict\": true,\n" +
+                "      \"schema\": {\n" +
+                "        \"type\": \"object\",\n" +
+                "        \"properties\": {\n" +
+                "          \"psalm_number\": {\n" +
+                "            \"type\": \"integer\",\n" +
+                "            \"description\": \"The number of the psalm being referenced\"\n" +
+                "          },\n" +
+                "          \"introduction\": {\n" +
+                "            \"type\": \"string\",\n" +
+                "            \"description\": \"The introduction to the psalm\"\n" +
+                "          },\n" +
+                "          \"incommunicable_attributes_section_header\": {\n" +
+                "            \"type\": \"string\",\n" +
+                "            \"description\": \"The header for the incommunicable attributes section\"\n" +
+                "          },\n" +
+                "          \"incommunicable_attributes\": {\n" +
+                "            \"type\": \"array\",\n" +
+                "            \"description\": \"An array of incommunicable attributes\",\n" +
+                "            \"items\": {\n" +
+                "              \"type\": \"object\",\n" +
+                "              \"properties\": {\n" +
+                "                \"name_of_attribute\": {\n" +
+                "                  \"type\": \"string\",\n" +
+                "                  \"description\": \"The name of the incommunicable attribute\"\n" +
+                "                },\n" +
+                "                \"description_of_attribute\": {\n" +
+                "                  \"type\": \"string\",\n" +
+                "                  \"description\": \"The description or discourse on the incommunicable attribute\"\n" +
+                "                }\n" +
+                "              },\n" +
+                "              \"required\": [\"name_of_attribute\", \"description_of_attribute\"],\n" +
+                "              \"additionalProperties\": false\n" +
+                "            }\n" +
+                "          },\n" +
+                "          \"communicable_attributes_section_header\": {\n" +
+                "            \"type\": \"string\",\n" +
+                "            \"description\": \"The header for the communicable attributes section\"\n" +
+                "          },\n" +
+                "          \"communicable_attributes\": {\n" +
+                "            \"type\": \"array\",\n" +
+                "            \"description\": \"An array of communicable attributes\",\n" +
+                "            \"items\": {\n" +
+                "              \"type\": \"object\",\n" +
+                "              \"properties\": {\n" +
+                "                \"name_of_attribute\": {\n" +
+                "                  \"type\": \"string\",\n" +
+                "                  \"description\": \"The name of the communicable attribute\"\n" +
+                "                },\n" +
+                "                \"description_of_attribute\": {\n" +
+                "                  \"type\": \"string\",\n" +
+                "                  \"description\": \"The description or discourse on the communicable attribute\"\n" +
+                "                }\n" +
+                "              },\n" +
+                "              \"required\": [\"name_of_attribute\", \"description_of_attribute\"],\n" +
+                "              \"additionalProperties\": false\n" +
+                "            }\n" +
+                "          }\n" +
+                "        },\n" +
+                "        \"required\": [\"psalm_number\", \"introduction\", \"incommunicable_attributes_section_header\", \"incommunicable_attributes\", \"communicable_attributes_section_header\", \"communicable_attributes\"],\n" +
+                "        \"additionalProperties\": false\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
+        String intratextualGPTRequestBody = "{\n" +
+                "  \"model\": \"gpt-4o\",\n" +
+                "  \"messages\": [\n" +
+                "    {\"role\": \"system\", \"content\": \"" + escapeJson(systemPrompt) + "\"},\n" +
+                "    {\"role\": \"user\", \"content\": \"" + escapeJson(userPrompt) + "\"}\n" +
+                "  ],\n" +
+                "  \"max_tokens\": 16384,\n" +
+                "  \"stream\": true,\n" +
+                "  \"response_format\": {\n" +
+                "    \"type\": \"json_schema\",\n" +
+                "    \"json_schema\": {\n" +
+                "      \"name\": \"IntratextualSchema\",\n" +
+                "      \"strict\": true,\n" +
+                "      \"schema\": {\n" +
+                "        \"type\": \"object\",\n" +
+                "        \"properties\": {\n" +
+                "          \"introduction\": {\n" +
+                "            \"type\": \"string\",\n" +
+                "            \"description\": \"An introductory overview for the passage or topic being analyzed\"\n" +
+                "          },\n" +
+                "          \"verse_groups\": {\n" +
+                "            \"type\": \"array\",\n" +
+                "            \"description\": \"An array of verse groups with thematic similarities\",\n" +
+                "            \"items\": {\n" +
+                "              \"type\": \"object\",\n" +
+                "              \"properties\": {\n" +
+                "                \"group_title\": {\n" +
+                "                  \"type\": \"string\",\n" +
+                "                  \"description\": \"A short, descriptive title for the verse group\"\n" +
+                "                },\n" +
+                "                \"verses\": {\n" +
+                "                  \"type\": \"string\",\n" +
+                "                  \"description\": \"The verses that belong to this group\"\n" +
+                "                },\n" +
+                "                \"abbreviated_description\": {\n" +
+                "                  \"type\": \"string\",\n" +
+                "                  \"description\": \"A brief sentence describing the group's focus\"\n" +
+                "                },\n" +
+                "                \"thematic_paragraph\": {\n" +
+                "                  \"type\": \"string\",\n" +
+                "                  \"description\": \"A paragraph about the thematic similarities between the verses in the group\"\n" +
+                "                },\n" +
+                "                \"focus_questions\": {\n" +
+                "                  \"type\": \"array\",\n" +
+                "                  \"description\": \"An array of focus questions for this verse group\",\n" +
+                "                  \"items\": {\n" +
+                "                    \"type\": \"object\",\n" +
+                "                    \"properties\": {\n" +
+                "                      \"question\": {\n" +
+                "                        \"type\": \"string\",\n" +
+                "                        \"description\": \"A focus question for deeper understanding\"\n" +
+                "                      },\n" +
+                "                      \"answer\": {\n" +
+                "                        \"type\": \"string\",\n" +
+                "                        \"description\": \"A suggested answer to the focus question\"\n" +
+                "                      }\n" +
+                "                    },\n" +
+                "                    \"required\": [\"question\", \"answer\"],\n" +
+                "                    \"additionalProperties\": false\n" +
+                "                  }\n" +
+                "                },\n" +
+                "                \"reflect_questions\": {\n" +
+                "                  \"type\": \"array\",\n" +
+                "                  \"description\": \"An array of reflection questions or suggestions for this group\",\n" +
+                "                  \"items\": {\n" +
+                "                    \"type\": \"string\",\n" +
+                "                    \"description\": \"A reflection question or suggestion for further contemplation\"\n" +
+                "                  }\n" +
+                "                }\n" +
+                "              },\n" +
+                "              \"required\": [\"group_title\", \"verses\", \"abbreviated_description\", \"thematic_paragraph\", \"focus_questions\", \"reflect_questions\"],\n" +
+                "              \"additionalProperties\": false\n" +
+                "            }\n" +
+                "          },\n" +
+                "          \"thematic_summary\": {\n" +
+                "            \"type\": \"string\",\n" +
+                "            \"description\": \"A concluding summary highlighting the thematic connections across all verse groups\"\n" +
+                "          }\n" +
+                "        },\n" +
+                "        \"required\": [\"introduction\", \"verse_groups\", \"thematic_summary\"],\n" +
+                "        \"additionalProperties\": false\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
         String selectedRequestBody;
         if (assistantName.equals("ParaphraseGPT")) {
             selectedRequestBody = paraphraseGPTRequestBody;
+        } else if (assistantName.equals("TheophanyGPT")) {
+            selectedRequestBody = theophanyGPTRequestBody;
+        } else if (assistantName.equals("IntratextualGPT")) {
+            selectedRequestBody = intratextualGPTRequestBody;
         } else {
             selectedRequestBody = requestBody;
         }
