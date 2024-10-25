@@ -70,7 +70,7 @@ public class ChatGPTApp extends JFrame {
 
         // Build the request body
         String requestBody = "{\n" +
-                "  \"model\": \"gpt-4\",\n" +
+                "  \"model\": \"gpt-4o\",\n" +
                 "  \"messages\": [\n" +
                 "    {\"role\": \"user\", \"content\": \"" + escapeJson(prompt) + "\"}\n" +
                 "  ],\n" +

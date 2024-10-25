@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Initial commit III">
+    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Added GUI">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ChatGPTApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChatGPTApp.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -42,12 +43,12 @@
     &quot;assignee&quot;: &quot;theoknock&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/theoknock/ChatGPTApp.git&quot;,
-    &quot;accountId&quot;: &quot;6c1fb09a-b3c8-409d-900c-011a6706e850&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:theoknock/ChatGPTApp.git",
+    "accountId": "6c1fb09a-b3c8-409d-900c-011a6706e850"
   }
-}</component>
+}]]></component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -93,7 +94,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1729815884329</updated>
-      <workItem from="1729815885346" duration="2738000" />
+      <workItem from="1729815885346" duration="3156000" />
+      <workItem from="1729819264841" duration="155000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -119,7 +121,23 @@
       <option name="project" value="LOCAL" />
       <updated>1729818591783</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added GUI">
+      <option name="closed" value="true" />
+      <created>1729818884441</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1729818884441</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added GUI">
+      <option name="closed" value="true" />
+      <created>1729818966495</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1729818966495</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -156,6 +174,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Initial commit III" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial commit III" />
+    <MESSAGE value="Added GUI" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added GUI" />
   </component>
 </project>
