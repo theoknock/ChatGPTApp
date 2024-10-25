@@ -8,19 +8,37 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.*;
 import java.time.Duration;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ChatGPTApp extends JFrame {
 
     private JTextField promptField;
-    private JTextArea responseAreaGPT4;
-    private JTextArea responseAreaGPT35;
     private JButton submitButton;
+    private JTabbedPane tabbedPane;
+    private Map<String, String> assistants;
+    private Map<String, JTextArea> responseAreas;
 
     public ChatGPTApp() {
-        setTitle("ChatGPT Model Comparison App");
-        setSize(800, 600);
+        setTitle("GPT Assistants App");
+        setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        initAssistants();
         initComponents();
+    }
+
+    private void initAssistants() {
+        assistants = new LinkedHashMap<>();
+        responseAreas = new LinkedHashMap<>();
+
+        // Initialize assistants with their system prompts
+        assistants.put("AbstractGPT", "Your role is to write an abstract of a given psalm that conforms to specific quality and content standards...\n[Include the full system prompt for AbstractGPT here]");
+        assistants.put("ParaphraseGPT", "This GPT is designed to provide paraphrasing for a single psalm from the King James Version (KJV) unless otherwise specified...\n[Include the full system prompt for ParaphraseGPT here]");
+        assistants.put("ChristologyGPT", "Analyze the given Psalm to uncover any themes, typologies, and prophecies about Jesus Christ...\n[Include the full system prompt for ChristologyGPT here]");
+        assistants.put("IntratextualGPT", "Your task is to perform a synoptic analysis of a given psalm, grouping verses that have similar themes...\n[Include the full system prompt for IntratextualGPT here]");
+        assistants.put("ExegesisGPT", "Your role is to provide contemporary theological exegesis for any given Psalm or relevant biblical text...\n[Include the full system prompt for ExegesisGPT here]");
+        assistants.put("TheophanyGPT", "Your task is to perform a theophanic analysis of a given psalm, focusing on how the psalm embodies or reflects God’s divine nature...\n[Include the full system prompt for TheophanyGPT here]");
+        assistants.put("IntertextualGPT", "Your instructions are to perform an intertextual analysis of a given Psalm, identifying and comparing thematic connections...\n[Include the full system prompt for IntertextualGPT here]");
     }
 
     private void initComponents() {
@@ -33,33 +51,27 @@ public class ChatGPTApp extends JFrame {
         inputPanel.add(promptField, BorderLayout.CENTER);
         inputPanel.add(submitButton, BorderLayout.EAST);
 
-        // Response panels
-        responseAreaGPT4 = new JTextArea();
-        responseAreaGPT4.setEditable(false);
-        responseAreaGPT4.setLineWrap(true);
-        responseAreaGPT4.setWrapStyleWord(true);
+        // Tabbed pane to hold response areas
+        tabbedPane = new JTabbedPane();
 
-        responseAreaGPT35 = new JTextArea();
-        responseAreaGPT35.setEditable(false);
-        responseAreaGPT35.setLineWrap(true);
-        responseAreaGPT35.setWrapStyleWord(true);
+        // Initialize response areas for each assistant
+        for (String assistantName : assistants.keySet()) {
+            JTextArea responseArea = new JTextArea();
+            responseArea.setEditable(false);
+            responseArea.setLineWrap(true);
+            responseArea.setWrapStyleWord(true);
+            responseAreas.put(assistantName, responseArea);
 
-        JPanel responsePanelGPT4 = new JPanel(new BorderLayout());
-        responsePanelGPT4.add(new JLabel("GPT-4 Response:"), BorderLayout.NORTH);
-        responsePanelGPT4.add(new JScrollPane(responseAreaGPT4), BorderLayout.CENTER);
+            JPanel responsePanel = new JPanel(new BorderLayout());
+            responsePanel.add(new JScrollPane(responseArea), BorderLayout.CENTER);
 
-        JPanel responsePanelGPT35 = new JPanel(new BorderLayout());
-        responsePanelGPT35.add(new JLabel("GPT-3.5-Turbo Response:"), BorderLayout.NORTH);
-        responsePanelGPT35.add(new JScrollPane(responseAreaGPT35), BorderLayout.CENTER);
-
-        // Split pane to hold both response panels
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, responsePanelGPT4, responsePanelGPT35);
-        splitPane.setDividerLocation(400);
+            tabbedPane.addTab(assistantName, responsePanel);
+        }
 
         // Main frame layout
         setLayout(new BorderLayout());
         add(inputPanel, BorderLayout.NORTH);
-        add(splitPane, BorderLayout.CENTER);
+        add(tabbedPane, BorderLayout.CENTER);
 
         // Action listener for the submit button
         submitButton.addActionListener(new ActionListener() {
@@ -67,18 +79,25 @@ public class ChatGPTApp extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String prompt = promptField.getText().trim();
                 if (!prompt.isEmpty()) {
-                    responseAreaGPT4.setText("");
-                    responseAreaGPT35.setText("");
                     submitButton.setEnabled(false);
-                    // Start threads for both models
-                    new Thread(() -> sendRequest(prompt, "gpt-4", responseAreaGPT4)).start();
-                    new Thread(() -> sendRequest(prompt, "gpt-3.5-turbo", responseAreaGPT35)).start();
+
+                    // Clear previous responses
+                    for (JTextArea responseArea : responseAreas.values()) {
+                        responseArea.setText("");
+                    }
+
+                    // Start a new thread for each assistant
+                    for (String assistantName : assistants.keySet()) {
+                        String systemPrompt = assistants.get(assistantName);
+                        JTextArea responseArea = responseAreas.get(assistantName);
+                        new Thread(() -> sendRequest(prompt, systemPrompt, responseArea)).start();
+                    }
                 }
             }
         });
     }
 
-    private void sendRequest(String prompt, String model, JTextArea responseArea) {
+    private void sendRequest(String userPrompt, String systemPrompt, JTextArea responseArea) {
         // Get your OpenAI API key from an environment variable
         String apiKey = "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";
         if (apiKey == null || apiKey.isEmpty()) {
@@ -97,9 +116,10 @@ public class ChatGPTApp extends JFrame {
 
         // Build the request body
         String requestBody = "{\n" +
-                "  \"model\": \"" + model + "\",\n" +
+                "  \"model\": \"gpt-4\",\n" +
                 "  \"messages\": [\n" +
-                "    {\"role\": \"user\", \"content\": \"" + escapeJson(prompt) + "\"}\n" +
+                "    {\"role\": \"system\", \"content\": \"" + escapeJson(systemPrompt) + "\"},\n" +
+                "    {\"role\": \"user\", \"content\": \"" + escapeJson(userPrompt) + "\"}\n" +
                 "  ],\n" +
                 "  \"stream\": true\n" +
                 "}";
@@ -111,7 +131,7 @@ public class ChatGPTApp extends JFrame {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(apiURL))
-                    .timeout(Duration.ofMinutes(2))
+                    .timeout(Duration.ofMinutes(5))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + apiKey)
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
@@ -124,7 +144,7 @@ public class ChatGPTApp extends JFrame {
                 String errorBody = new String(response.body().readAllBytes());
                 SwingUtilities.invokeLater(() -> {
                     JOptionPane.showMessageDialog(this,
-                            "Error from " + model + ": " + response.statusCode() + " - " + errorBody,
+                            "Error: " + response.statusCode() + " - " + errorBody,
                             "API Error",
                             JOptionPane.ERROR_MESSAGE);
                     submitButton.setEnabled(true);
@@ -156,16 +176,23 @@ public class ChatGPTApp extends JFrame {
         } catch (Exception e) {
             SwingUtilities.invokeLater(() -> {
                 JOptionPane.showMessageDialog(this,
-                        "An error occurred with " + model + ":\n" + e.getMessage(),
+                        "An error occurred:\n" + e.getMessage(),
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
                 submitButton.setEnabled(true);
             });
             e.printStackTrace();
         } finally {
-            // Check if both responses are done
+            // Check if all responses are done
             SwingUtilities.invokeLater(() -> {
-                if (!submitButton.isEnabled()) {
+                boolean allDone = true;
+                for (JTextArea area : responseAreas.values()) {
+                    if (area.getText().isEmpty()) {
+                        allDone = false;
+                        break;
+                    }
+                }
+                if (allDone) {
                     submitButton.setEnabled(true);
                 }
             });
@@ -174,12 +201,7 @@ public class ChatGPTApp extends JFrame {
 
     private static String extractContent(String jsonData) {
         // Naive JSON parsing to extract the "content" field
-        int deltaIndex = jsonData.indexOf("\"delta\":");
-        if (deltaIndex == -1) {
-            return null;
-        }
-
-        int contentIndex = jsonData.indexOf("\"content\":", deltaIndex);
+        int contentIndex = jsonData.indexOf("\"content\":");
         if (contentIndex == -1) {
             return null;
         }
@@ -190,6 +212,10 @@ public class ChatGPTApp extends JFrame {
         }
 
         int endQuoteIndex = jsonData.indexOf("\"", startQuoteIndex + 1);
+        while (endQuoteIndex != -1 && jsonData.charAt(endQuoteIndex - 1) == '\\') {
+            // Skip escaped quote
+            endQuoteIndex = jsonData.indexOf("\"", endQuoteIndex + 1);
+        }
         if (endQuoteIndex == -1) {
             return null;
         }
@@ -219,3 +245,5 @@ public class ChatGPTApp extends JFrame {
         });
     }
 }
+
+
