@@ -233,14 +233,14 @@ public class ChatGPTApp extends JFrame {
                     for (String assistantName : assistants.keySet()) {
                         String systemPrompt = assistants.get(assistantName);
                         JTextArea responseArea = responseAreas.get(assistantName);
-                        new Thread(() -> sendRequest(prompt, systemPrompt, responseArea)).start();
+                        new Thread(() -> sendRequest(assistantName, prompt, systemPrompt, responseArea)).start();
                     }
                 }
             }
         });
     }
 
-    private void sendRequest(String userPrompt, String systemPrompt, JTextArea responseArea) {
+    private void sendRequest(String assistantName, String userPrompt, String systemPrompt, JTextArea responseArea) {
         System.out.println("sendRequest");
         // Get your OpenAI API key from an environment variable
         String apiKey = "";
@@ -291,6 +291,54 @@ public class ChatGPTApp extends JFrame {
                 "  }\n" +
                 "}";
 
+        String paraphraseGPTRequestBody = "{\n" +
+                "  \"model\": \"gpt-4o\",\n" +
+                "  \"messages\": [\n" +
+                "    {\"role\": \"system\", \"content\": \"" + escapeJson(systemPrompt) + "\"},\n" +
+                "    {\"role\": \"user\", \"content\": \"" + escapeJson(userPrompt) + "\"}\n" +
+                "  ],\n" +
+                "  \"stream\": true,\n" +
+                "  \"response_format\": {\n" +
+                "    \"type\": \"json_schema\",\n" +
+                "    \"json_schema\": {\n" +
+                "      \"name\": \"ParaphraseSchema\",\n" +
+                "      \"strict\": true,\n" +
+                "      \"schema\": {\n" +
+                "        \"type\": \"object\",\n" +
+                "        \"properties\": {\n" +
+                "          \"psalm_number\": {\n" +
+                "            \"type\": \"integer\"\n" +
+                "          },\n" +
+                "          \"verses\": {\n" +
+                "            \"type\": \"array\",\n" +
+                "            \"items\": {\n" +
+                "              \"type\": \"object\",\n" +
+                "              \"properties\": {\n" +
+                "                \"verse\": { \"type\": \"integer\" },\n" +
+                "                \"original\": { \"type\": \"string\" },\n" +
+                "                \"simplified\": { \"type\": \"string\" },\n" +
+                "                \"amplified\": { \"type\": \"string\" },\n" +
+                "                \"contextual\": { \"type\": \"string\" }\n" +
+                "              },\n" +
+                "              \"required\": [\"verse\", \"original\", \"simplified\", \"amplified\", \"contextual\"],\n" +
+                "              \"additionalProperties\": false\n" +
+                "            }\n" +
+                "          }\n" +
+                "        },\n" +
+                "        \"required\": [\"psalm_number\", \"verses\"],\n" +
+                "        \"additionalProperties\": false\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
+        String selectedRequestBody;
+        if (assistantName.equals("ParaphraseGPT")) {
+            selectedRequestBody = paraphraseGPTRequestBody;
+        } else {
+            selectedRequestBody = requestBody;
+        }
+
         try {
             HttpClient client = HttpClient.newBuilder()
                     .connectTimeout(Duration.ofSeconds(10))
@@ -301,7 +349,7 @@ public class ChatGPTApp extends JFrame {
                     .timeout(Duration.ofMinutes(5))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + apiKey)
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .POST(HttpRequest.BodyPublishers.ofString(selectedRequestBody))
                     .build();
 
             HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
