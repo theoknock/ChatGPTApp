@@ -1,0 +1,126 @@
+Index: src/ChatGPTApp.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.io.BufferedReader;\nimport java.io.InputStream;\nimport java.io.InputStreamReader;\nimport java.net.URI;\nimport java.net.http.*;\nimport java.time.Duration;\n\npublic class ChatGPTApp {\n    public static void main(String[] args) {\n        // Your OpenAI API key\n        String apiKey = \"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\";  // Replace with your actual API key\n        // OpenAI API endpoint\n        String apiURL = \"https://api.openai.com/v1/chat/completions\";\n\n        // Build the request body\n        String requestBody = \"{\\n\" +\n                \"  \\\"model\\\": \\\"gpt-4\\\",\\n\" +\n                \"  \\\"messages\\\": [\\n\" +\n                \"    {\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Tell me about quantum computing.\\\"}\\n\" +\n                \"  ],\\n\" +\n                \"  \\\"stream\\\": true\\n\" +\n                \"}\";\n\n        try {\n            HttpClient client = HttpClient.newBuilder()\n                    .connectTimeout(Duration.ofSeconds(10))\n                    .build();\n\n            HttpRequest request = HttpRequest.newBuilder()\n                    .uri(URI.create(apiURL))\n                    .timeout(Duration.ofMinutes(2))\n                    .header(\"Content-Type\", \"application/json\")\n                    .header(\"Authorization\", \"Bearer \" + apiKey)\n                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))\n                    .build();\n\n            HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());\n\n            if (response.statusCode() != 200) {\n                // Read the error response body\n                String errorBody = new String(response.body().readAllBytes());\n                System.err.println(\"Error: \" + response.statusCode() + \" - \" + errorBody);\n                return;\n            }\n\n            BufferedReader reader = new BufferedReader(new InputStreamReader(response.body()));\n\n            String line;\n            while ((line = reader.readLine()) != null) {\n                if (line.startsWith(\"data: \")) {\n                    String data = line.substring(\"data: \".length()).trim();\n\n                    if (data.equals(\"[DONE]\")) {\n                        break;\n                    }\n\n                    // Now parse the JSON in data\n                    String content = extractContent(data);\n\n                    if (content != null) {\n                        System.out.print(content);\n                        System.out.flush();\n                    }\n                }\n            }\n        } catch (Exception e) {\n            System.err.println(\"An error occurred:\");\n            e.printStackTrace();\n        }\n    }\n\n    private static String extractContent(String jsonData) {\n        // Naive JSON parsing to extract the \"content\" field\n        int deltaIndex = jsonData.indexOf(\"\\\"delta\\\":\");\n        if (deltaIndex == -1) {\n            return null;\n        }\n\n        int contentIndex = jsonData.indexOf(\"\\\"content\\\":\", deltaIndex);\n        if (contentIndex == -1) {\n            return null;\n        }\n\n        int startQuoteIndex = jsonData.indexOf(\"\\\"\", contentIndex + \"\\\"content\\\":\".length());\n        if (startQuoteIndex == -1) {\n            return null;\n        }\n\n        int endQuoteIndex = jsonData.indexOf(\"\\\"\", startQuoteIndex + 1);\n        if (endQuoteIndex == -1) {\n            return null;\n        }\n\n        String content = jsonData.substring(startQuoteIndex + 1, endQuoteIndex);\n\n        // Unescape escaped characters\n        content = content.replace(\"\\\\n\", \"\\n\")\n                .replace(\"\\\\t\", \"\\t\")\n                .replace(\"\\\\\\\"\", \"\\\"\")\n                .replace(\"\\\\\\\\\", \"\\\\\");\n\n        return content;\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/ChatGPTApp.java b/src/ChatGPTApp.java
+--- a/src/ChatGPTApp.java	(revision 712df7787313f74d0ae80c6886333c94fcb94c7f)
++++ b/src/ChatGPTApp.java	(date 1729818489754)
+@@ -8,7 +8,7 @@
+ public class ChatGPTApp {
+     public static void main(String[] args) {
+         // Your OpenAI API key
+-        String apiKey = "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";  // Replace with your actual API key
++        String apiKey = "";  // Replace with your actual API key
+         // OpenAI API endpoint
+         String apiURL = "https://api.openai.com/v1/chat/completions";
+ 
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"15902951-2f8d-4730-ac66-4443da94cb3d\" name=\"Changes\" comment=\"\">\n      <change afterPath=\"$PROJECT_DIR$/.gitignore\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/.idea/modules.xml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/.idea/vcs.xml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/ChatGPTApp.iml\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/src/ChatGPTApp.java\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Class\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"ProjectColorInfo\"><![CDATA[{\n  \"associatedIndex\": 1\n}]]></component>\n  <component name=\"ProjectId\" id=\"2nuH8vXQEUUjNfgkkwqMejNuFpd\" />\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"Application.ChatGPTApp.executor\": \"Run\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"git-widget-placeholder\": \"main\",\n    \"kotlin-language-version-configured\": \"true\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"project.structure.last.edited\": \"Modules\",\n    \"project.structure.proportion\": \"0.0\",\n    \"project.structure.side.proportion\": \"0.0\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11\" />\n        <option value=\"bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"15902951-2f8d-4730-ac66-4443da94cb3d\" name=\"Changes\" comment=\"\" />\n      <created>1729815884329</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1729815884329</updated>\n      <workItem from=\"1729815885346\" duration=\"1691000\" />\n    </task>\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 712df7787313f74d0ae80c6886333c94fcb94c7f)
++++ b/.idea/workspace.xml	(date 1729818319757)
+@@ -4,14 +4,8 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="">
+-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/ChatGPTApp.iml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/ChatGPTApp.java" afterDir="false" />
++    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Initial commit">
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -28,6 +22,24 @@
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
++  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
++  "history": [
++    {
++      "state": "OPEN",
++      "assignee": "theoknock"
++    }
++  ],
++  "lastFilter": {
++    "state": "OPEN",
++    "assignee": "theoknock"
++  }
++}]]></component>
++  <component name="GithubPullRequestsUISettings"><![CDATA[{
++  "selectedUrlAndAccountId": {
++    "url": "https://github.com/theoknock/ChatGPTApp.git",
++    "accountId": "6c1fb09a-b3c8-409d-900c-011a6706e850"
++  }
++}]]></component>
+   <component name="ProjectColorInfo"><![CDATA[{
+   "associatedIndex": 1
+ }]]></component>
+@@ -70,11 +82,52 @@
+       <option name="number" value="Default" />
+       <option name="presentableId" value="Default" />
+       <updated>1729815884329</updated>
+-      <workItem from="1729815885346" duration="1691000" />
++      <workItem from="1729815885346" duration="2426000" />
+     </task>
++    <task id="LOCAL-00001" summary="Initial commit">
++      <option name="closed" value="true" />
++      <created>1729817648557</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1729817648557</updated>
++    </task>
++    <option name="localTasksCounter" value="2" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+     <option name="version" value="3" />
+   </component>
++  <component name="Vcs.Log.Tabs.Properties">
++    <option name="TAB_STATES">
++      <map>
++        <entry key="MAIN">
++          <value>
++            <State>
++              <option name="CUSTOM_BOOLEAN_PROPERTIES">
++                <map>
++                  <entry key="Show.Git.Branches" value="true" />
++                </map>
++              </option>
++              <option name="FILTERS">
++                <map>
++                  <entry key="branch">
++                    <value>
++                      <list>
++                        <option value="main" />
++                      </list>
++                    </value>
++                  </entry>
++                </map>
++              </option>
++            </State>
++          </value>
++        </entry>
++      </map>
++    </option>
++  </component>
++  <component name="VcsManagerConfiguration">
++    <MESSAGE value="Initial commit" />
++    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
++  </component>
+ </project>
+\ No newline at end of file
