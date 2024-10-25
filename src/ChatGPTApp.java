@@ -99,7 +99,7 @@ public class ChatGPTApp extends JFrame {
 
     private void sendRequest(String userPrompt, String systemPrompt, JTextArea responseArea) {
         // Get your OpenAI API key from an environment variable
-        String apiKey = "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";
+        String apiKey = "";
         if (apiKey == null || apiKey.isEmpty()) {
             SwingUtilities.invokeLater(() -> {
                 JOptionPane.showMessageDialog(this,
