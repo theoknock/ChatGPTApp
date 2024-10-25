@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Added GUI">
+    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Updated model to GPT-4o">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ChatGPTApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChatGPTApp.java" afterDir="false" />
     </list>
@@ -43,12 +43,12 @@
     &quot;assignee&quot;: &quot;theoknock&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:theoknock/ChatGPTApp.git",
-    "accountId": "6c1fb09a-b3c8-409d-900c-011a6706e850"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:theoknock/ChatGPTApp.git&quot;,
+    &quot;accountId&quot;: &quot;6c1fb09a-b3c8-409d-900c-011a6706e850&quot;
   }
-}]]></component>
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -95,7 +95,8 @@
       <option name="presentableId" value="Default" />
       <updated>1729815884329</updated>
       <workItem from="1729815885346" duration="3156000" />
-      <workItem from="1729819264841" duration="155000" />
+      <workItem from="1729819264841" duration="529000" />
+      <workItem from="1729837473373" duration="220000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -137,7 +138,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729818966495</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Updated model to GPT-4o">
+      <option name="closed" value="true" />
+      <created>1729819439409</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1729819439409</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -175,6 +184,7 @@
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Initial commit III" />
     <MESSAGE value="Added GUI" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added GUI" />
+    <MESSAGE value="Updated model to GPT-4o" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated model to GPT-4o" />
   </component>
 </project>

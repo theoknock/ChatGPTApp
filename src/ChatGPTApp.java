@@ -10,58 +10,85 @@ import java.net.http.*;
 import java.time.Duration;
 
 public class ChatGPTApp extends JFrame {
+
     private JTextField promptField;
-    private JTextArea responseArea;
+    private JTextArea responseAreaGPT4;
+    private JTextArea responseAreaGPT35;
     private JButton submitButton;
 
     public ChatGPTApp() {
-        setTitle("ChatGPT App");
-        setSize(600, 400);
+        setTitle("ChatGPT Model Comparison App");
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initComponents();
     }
 
     private void initComponents() {
+        // Prompt input panel
+        JPanel inputPanel = new JPanel(new BorderLayout());
         promptField = new JTextField();
-        responseArea = new JTextArea();
-        responseArea.setEditable(false);
-        responseArea.setLineWrap(true);
-        responseArea.setWrapStyleWord(true);
-
         submitButton = new JButton("Submit");
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(new JLabel("Enter your prompt:"), BorderLayout.NORTH);
-        panel.add(promptField, BorderLayout.CENTER);
-        panel.add(submitButton, BorderLayout.EAST);
+        inputPanel.add(new JLabel("Enter your prompt:"), BorderLayout.NORTH);
+        inputPanel.add(promptField, BorderLayout.CENTER);
+        inputPanel.add(submitButton, BorderLayout.EAST);
 
-        JScrollPane scrollPane = new JScrollPane(responseArea);
+        // Response panels
+        responseAreaGPT4 = new JTextArea();
+        responseAreaGPT4.setEditable(false);
+        responseAreaGPT4.setLineWrap(true);
+        responseAreaGPT4.setWrapStyleWord(true);
 
-        add(panel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
+        responseAreaGPT35 = new JTextArea();
+        responseAreaGPT35.setEditable(false);
+        responseAreaGPT35.setLineWrap(true);
+        responseAreaGPT35.setWrapStyleWord(true);
 
+        JPanel responsePanelGPT4 = new JPanel(new BorderLayout());
+        responsePanelGPT4.add(new JLabel("GPT-4 Response:"), BorderLayout.NORTH);
+        responsePanelGPT4.add(new JScrollPane(responseAreaGPT4), BorderLayout.CENTER);
+
+        JPanel responsePanelGPT35 = new JPanel(new BorderLayout());
+        responsePanelGPT35.add(new JLabel("GPT-3.5-Turbo Response:"), BorderLayout.NORTH);
+        responsePanelGPT35.add(new JScrollPane(responseAreaGPT35), BorderLayout.CENTER);
+
+        // Split pane to hold both response panels
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, responsePanelGPT4, responsePanelGPT35);
+        splitPane.setDividerLocation(400);
+
+        // Main frame layout
+        setLayout(new BorderLayout());
+        add(inputPanel, BorderLayout.NORTH);
+        add(splitPane, BorderLayout.CENTER);
+
+        // Action listener for the submit button
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String prompt = promptField.getText().trim();
                 if (!prompt.isEmpty()) {
-                    responseArea.setText("");
+                    responseAreaGPT4.setText("");
+                    responseAreaGPT35.setText("");
                     submitButton.setEnabled(false);
-                    new Thread(() -> sendRequest(prompt)).start();
+                    // Start threads for both models
+                    new Thread(() -> sendRequest(prompt, "gpt-4", responseAreaGPT4)).start();
+                    new Thread(() -> sendRequest(prompt, "gpt-3.5-turbo", responseAreaGPT35)).start();
                 }
             }
         });
     }
 
-    private void sendRequest(String prompt) {
+    private void sendRequest(String prompt, String model, JTextArea responseArea) {
         // Get your OpenAI API key from an environment variable
-        String apiKey = "";
+        String apiKey = "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";
         if (apiKey == null || apiKey.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "API key is not set. Please set the OPENAI_API_KEY environment variable.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            submitButton.setEnabled(true);
+            SwingUtilities.invokeLater(() -> {
+                JOptionPane.showMessageDialog(this,
+                        "API key is not set. Please set the OPENAI_API_KEY environment variable.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                submitButton.setEnabled(true);
+            });
             return;
         }
 
@@ -70,7 +97,7 @@ public class ChatGPTApp extends JFrame {
 
         // Build the request body
         String requestBody = "{\n" +
-                "  \"model\": \"gpt-4o\",\n" +
+                "  \"model\": \"" + model + "\",\n" +
                 "  \"messages\": [\n" +
                 "    {\"role\": \"user\", \"content\": \"" + escapeJson(prompt) + "\"}\n" +
                 "  ],\n" +
@@ -97,7 +124,7 @@ public class ChatGPTApp extends JFrame {
                 String errorBody = new String(response.body().readAllBytes());
                 SwingUtilities.invokeLater(() -> {
                     JOptionPane.showMessageDialog(this,
-                            "Error: " + response.statusCode() + " - " + errorBody,
+                            "Error from " + model + ": " + response.statusCode() + " - " + errorBody,
                             "API Error",
                             JOptionPane.ERROR_MESSAGE);
                     submitButton.setEnabled(true);
@@ -129,14 +156,19 @@ public class ChatGPTApp extends JFrame {
         } catch (Exception e) {
             SwingUtilities.invokeLater(() -> {
                 JOptionPane.showMessageDialog(this,
-                        "An error occurred:\n" + e.getMessage(),
+                        "An error occurred with " + model + ":\n" + e.getMessage(),
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
                 submitButton.setEnabled(true);
             });
             e.printStackTrace();
         } finally {
-            SwingUtilities.invokeLater(() -> submitButton.setEnabled(true));
+            // Check if both responses are done
+            SwingUtilities.invokeLater(() -> {
+                if (!submitButton.isEnabled()) {
+                    submitButton.setEnabled(true);
+                }
+            });
         }
     }
 
