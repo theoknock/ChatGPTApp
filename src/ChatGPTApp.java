@@ -8,7 +8,7 @@ import java.time.Duration;
 public class ChatGPTApp {
     public static void main(String[] args) {
         // Your OpenAI API key
-        String apiKey = "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";  // Replace with your actual API key
+        String apiKey = "";  // Replace with your actual API key
         // OpenAI API endpoint
         String apiURL = "https://api.openai.com/v1/chat/completions";
 
