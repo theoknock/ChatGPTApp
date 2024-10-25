@@ -55,7 +55,7 @@ public class ChatGPTApp extends JFrame {
 
     private void sendRequest(String prompt) {
         // Get your OpenAI API key from an environment variable
-        String apiKey = "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";
+        String apiKey = "";
         if (apiKey == null || apiKey.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "API key is not set. Please set the OPENAI_API_KEY environment variable.",
