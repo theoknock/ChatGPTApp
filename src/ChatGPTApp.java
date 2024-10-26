@@ -34,22 +34,20 @@ public class ChatGPTApp extends JFrame {
 
         // Initialize assistants with their system prompts
         assistants.put("AbstractGPT", """
-                AbstractGPT writes an abstract of a given psalm that conforms to the following quality and content standards:
+                AbstractGPT writes an abstract for the given psalm that contains these sections (each is its own, 5 to 6 sentence paragraph):
                                \s
-                                1. A Highlight: The abstract should begin with a key highlight that best represents the central message or emphasis of the Psalm, reflecting its specific content and significance.
+                                1. Verse Highlight: The abstract should begin with a key highlight that best represents the central message or emphasis of the Psalm, reflecting its specific content and significance.
                                 2. The Purpose: Clearly describe the purpose of the Psalm, explaining its spiritual intent and how it serves or helps the believer. Avoid mentioning the writer unless referring to the Psalm’s direct impact on worship or spiritual life.
                                 3. Themes: Identify and summarize the key themes found in the psalm, supported by references from the text itself.
                                 4. Theological Summary: Provide a theological summary that explains how the psalm’s message contributes to an understanding of God, faith, and spiritual matters.
                                 5. Christological Summary: A summary that identifies any direct or indirect connections to Christ, the gospel, or messianic prophecies.
                                 6. Modern Application: Give advice on how Christians today can apply the psalm’s lessons in their own lives.
+                                
+                                AbstractGPT should incorporate specific verses from the Psalm itself to support the identified themes, along with New Testament scripture to show how the psalm’s message relates to Christian faith, especially in connection to Christ.
                                \s
                                 NOTE: DO NOT TITLE OR ADD A HEADING TO ANY OF THESE 6 SECTIONS.
-                               \s
-                                When prompted with a specific psalm (e.g., “Psalm 23” or “23”), AbstractGPT must meet the following criteria:
-                               \s
-                                1. The abstract should consist of 6 well-formed paragraphs that highlight the Psalm’s key message, its purpose, themes, and any theological and Christological significance.
-                                2. The abstract should incorporate specific verses from the Psalm itself to support the identified themes, along with New Testament scripture to show how the psalm’s message relates to Christian faith, especially in connection to Christ.
-                                3. The last paragraph should offer practical advice on how Christians can apply the psalm’s message in their daily lives. The response should remain brief yet thorough, never exceeding two paragraphs for the Christological and theological summaries combined.""");
+                                """);
+
         assistants.put("ParaphraseGPT", """
                 This GPT is designed to provide paraphrasing for a single psalm (no more, no less) from the King James Version (KJV) unless otherwise specified. Users must enter a psalm number only (e.g., “Psalm 23” or simply “23”); they can optionally specify one or more of these three levels of paraphrasing: simplified, amplified, and contextual (if none are specified, respond with paraphrasing for all three levels).
                        \s
@@ -264,7 +262,7 @@ public class ChatGPTApp extends JFrame {
                 "  \"response_format\": {\n" +
                 "    \"type\": \"json_schema\",\n" +
                 "    \"json_schema\": {\n" +
-                "      \"name\": \"response_name\",\n" +
+                "      \"name\": \"GenericSchema\",\n" +
                 "      \"description\": \"Extracts the psalm number and response text from unstructured data\",\n" +
                 "      \"strict\": true,\n" +
                 "      \"schema\": {\n" +
@@ -285,6 +283,74 @@ public class ChatGPTApp extends JFrame {
                 "    }\n" +
                 "  }\n" +
                 "}";
+
+        String abstractGPTRequestBody = "{\n" +
+                "  \"model\": \"gpt-4o\",\n" +
+                "  \"messages\": [\n" +
+                "    {\"role\": \"system\", \"content\": \"" + escapeJson(systemPrompt) + "\"},\n" +
+                "    {\"role\": \"user\", \"content\": \"" + escapeJson(userPrompt) + "\"}\n" +
+                "  ],\n" +
+                "  \"max_tokens\": 16384,\n" +
+                "  \"stream\": true,\n" +
+                "  \"response_format\": {\n" +
+                "    \"type\": \"json_schema\",\n" +
+                "    \"json_schema\": {\n" +
+                "      \"name\": \"AbstractSchema\",\n" +
+                "      \"strict\": true,\n" +
+                "      \"schema\": {\n" +
+                "        \"type\": \"object\",\n" +
+                "        \"properties\": {\n" +
+                "          \"psalm_number\": {\n" +
+                "            \"type\": \"integer\",\n" +
+                "            \"description\": \"The number of the Psalm being analyzed\"\n" +
+                "          },\n" +
+                "          \"sections\": {\n" +
+                "            \"type\": \"object\",\n" +
+                "            \"properties\": {\n" +
+                "              \"highlight\": {\n" +
+                "                \"type\": \"string\",\n" +
+                "                \"description\": \"A key highlight representing the central message or emphasis of the Psalm\"\n" +
+                "              },\n" +
+                "              \"purpose\": {\n" +
+                "                \"type\": \"string\",\n" +
+                "                \"description\": \"The purpose of the Psalm, explaining its spiritual intent and how it serves or helps the believer\"\n" +
+                "              },\n" +
+                "              \"themes\": {\n" +
+                "                \"type\": \"string\",\n" +
+                "                \"description\": \"Summary of key themes in the Psalm, supported by specific verses\"\n" +
+                "              },\n" +
+                "              \"theological_summary\": {\n" +
+                "                \"type\": \"string\",\n" +
+                "                \"description\": \"A theological summary explaining the Psalm's contribution to understanding of God and faith\"\n" +
+                "              },\n" +
+                "              \"christological_summary\": {\n" +
+                "                \"type\": \"string\",\n" +
+                "                \"description\": \"Summary identifying any connections to Christ, the gospel, or messianic prophecies\"\n" +
+                "              },\n" +
+                "              \"modern_application\": {\n" +
+                "                \"type\": \"string\",\n" +
+                "                \"description\": \"Advice on how Christians today can apply the Psalm’s lessons in their own lives\"\n" +
+                "              }\n" +
+                "            },\n" +
+                "            \"required\": [\n" +
+                "              \"highlight\",\n" +
+                "              \"purpose\",\n" +
+                "              \"themes\",\n" +
+                "              \"theological_summary\",\n" +
+                "              \"christological_summary\",\n" +
+                "              \"modern_application\"\n" +
+                "            ],\n" +
+                "            \"additionalProperties\": false\n" +
+                "          }\n" +
+                "        },\n" +
+                "        \"required\": [\"psalm_number\", \"sections\"],\n" +
+                "        \"additionalProperties\": false\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
+
         String paraphraseGPTRequestBody = "{\n" +
                 "  \"model\": \"gpt-4o\",\n" +
                 "  \"messages\": [\n" +
@@ -498,6 +564,8 @@ public class ChatGPTApp extends JFrame {
             selectedRequestBody = theophanyGPTRequestBody;
         } else if (assistantName.equals("IntratextualGPT")) {
             selectedRequestBody = intratextualGPTRequestBody;
+        } else if (assistantName.equals("AbstractGPT")) {
+            selectedRequestBody = abstractGPTRequestBody;
         } else {
             selectedRequestBody = requestBody;
         }
@@ -621,5 +689,4 @@ public class ChatGPTApp extends JFrame {
         });
     }
 }
-
 
