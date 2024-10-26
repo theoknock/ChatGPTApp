@@ -9,6 +9,10 @@ import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.rtf.RTFEditorKit;
+import java.io.FileOutputStream;
+
 public class ChatGPTApp extends JFrame {
 
     private JTextField promptField;
@@ -17,7 +21,7 @@ public class ChatGPTApp extends JFrame {
     private Map<String, JTextArea> responseAreas;
 
     private final String plainTextStyle = """
-            When responding to user queries, please use plain text format. Do not use markdown, HTML, or any other markup languages.
+            When responding to user queries, please use plain or rich text format. Do not use markdown, HTML, or any other markup languages.
             """;
 
     public ChatGPTApp() {
@@ -227,6 +231,16 @@ public class ChatGPTApp extends JFrame {
                 }
             }
         });
+
+        // Add a "Save as RTF" button in initComponents
+        JButton saveRtfButton = new JButton("Save Responses as RTF");
+        saveRtfButton.addActionListener(e -> {
+            for (String assistantName : responseAreas.keySet()) {
+                saveResponseAsRTF(assistantName, responseAreas.get(assistantName));
+            }
+        });
+
+        inputPanel.add(saveRtfButton, BorderLayout.WEST);
     }
 
     private void sendRequest(String assistantName, String userPrompt, String systemPrompt, JTextArea responseArea) {
@@ -661,6 +675,23 @@ public class ChatGPTApp extends JFrame {
                 .replace("\"", "\\\"")
                 .replace("\n", "\\n")
                 .replace("\r", "\\r");
+    }
+
+    public void saveResponseAsRTF(String assistantName, JTextArea responseArea) {
+        try {
+            DefaultStyledDocument doc = new DefaultStyledDocument();
+            doc.insertString(0, responseArea.getText(), null);
+
+            RTFEditorKit rtfEditor = new RTFEditorKit();
+            try (FileOutputStream out = new FileOutputStream(assistantName + "_response.rtf")) {
+                rtfEditor.write(out, doc, 0, doc.getLength());
+            }
+
+            JOptionPane.showMessageDialog(this, "Response saved as " + assistantName + "_response.rtf");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error saving response as RTF: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {

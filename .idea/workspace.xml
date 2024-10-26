@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Improved ChristologyGPT instructions">
+    <list default="true" id="15902951-2f8d-4730-ac66-4443da94cb3d" name="Changes" comment="Improved ExegesisGPT instructions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ChatGPTApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChatGPTApp.java" afterDir="false" />
     </list>
@@ -133,7 +133,7 @@
       <workItem from="1729865827802" duration="8627000" />
       <workItem from="1729886916882" duration="183000" />
       <workItem from="1729888081701" duration="2787000" />
-      <workItem from="1729890932966" duration="8281000" />
+      <workItem from="1729890932966" duration="9019000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -287,7 +287,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729918445098</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Improved ExegesisGPT instructions">
+      <option name="closed" value="true" />
+      <created>1729920115108</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1729920115108</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -336,6 +344,7 @@
     <MESSAGE value="Added schemas for TheophanyGPT and IntratextualGPT" />
     <MESSAGE value="Added schema for AbstractGPT" />
     <MESSAGE value="Improved ChristologyGPT instructions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improved ChristologyGPT instructions" />
+    <MESSAGE value="Improved ExegesisGPT instructions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improved ExegesisGPT instructions" />
   </component>
 </project>
